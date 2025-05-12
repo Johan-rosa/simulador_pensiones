@@ -53,7 +53,7 @@ get_mortality_table <- function(
     dplyr::slice(-1) |>
     dplyr::mutate(across(everything(), readr::parse_number)) |>
     dplyr::select(dplyr::all_of(col_index)) |>
-    setNames(table_name) |> 
+    stats::setNames(table_name) |> 
     suppressMessages()  
 }
 
@@ -92,7 +92,14 @@ get_sheet <- function(year) {
 #' 
 #' fuente: https://www.sipen.gob.do/documentos/norm_circular_15_03.pdf
 #' @export
-tabla_mortalidad_sipen <- tibble::tribble(
+get_mortality_table_sipen <- function(sex = "male") {
+ mortality_table_sipen |>
+   dplyr::select(dplyr::all_of(c("edad", ifelse(sex == "male", "qx_hombres", "qx_mujeres")))) |>
+   stats::setNames(c("edad", "qx")) |>
+   dplyr::mutate(qx = qx / 1000)
+}
+
+mortality_table_sipen <- tibble::tribble(
    ~edad, ~qx_hombres, ~qx_mujeres,
         15,    0.4255,      0.1546,
         16,    0.4555,      0.1538,
