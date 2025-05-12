@@ -125,10 +125,7 @@ simulate_worklife <- function(
   n_off_months <- round(total_months * (1 - employment_rate))
   off_months <- sort(sample(seq_len(total_months), n_off_months))
   
-  salaries_by_year <- rep(start_salary, working_years_left) |> 
-    purrr::imap_dbl(\(start_salary, years) {
-      start_salary * (1 + salary_growth) ^ (years - 1)
-    })
+  salaries_by_year <- start_salary * (1 + salary_growth) ^ (seq_len(working_years_left) - 1)
   
   salaries_by_month <- rep(salaries_by_year, each = 12)
   salaries_by_month[off_months] <- 0
